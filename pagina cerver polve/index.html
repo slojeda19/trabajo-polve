@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Intranet operativa de SJT Express." />
+    <title>SJT Express | Operaciones</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Cabecera fija de la intranet. El usuario conectado se reemplazará al integrar Samba/LDAP. -->
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio de SJT Express">
+        <span class="brand-mark">SJT</span>
+        <span>Express <small>Operaciones</small></span>
+      </a>
+      <div class="session"><span class="online-dot"></span> Modo demostración · Operador</div>
+    </header>
+
+    <div class="app-layout">
+      <!-- Navegación: cada botón muestra una vista sin cambiar de archivo. -->
+      <nav class="sidebar" aria-label="Navegación principal">
+        <button class="nav-item is-active" type="button" data-view="dashboard">Resumen</button>
+        <button class="nav-item" type="button" data-view="tracking">Seguimiento</button>
+        <button class="nav-item" type="button" data-view="shipment">Nuevo envío</button>
+        <button class="nav-item" type="button" data-view="infrastructure">Infraestructura</button>
+      </nav>
+
+      <main class="content">
+        <!-- VISTA 1: panel principal para el operador. -->
+        <section class="view is-visible" id="dashboard" aria-labelledby="dashboard-title">
+          <div class="page-heading">
+            <div><p class="eyebrow">Operación diaria</p><h1 id="dashboard-title">Resumen de envíos</h1></div>
+            <button class="primary-button" type="button" data-go-to="shipment">+ Registrar envío</button>
+          </div>
+          <div class="metrics" aria-label="Indicadores de envíos">
+            <article class="metric-card"><span>En tránsito</span><strong id="transit-count">0</strong><small>Paquetes entre sucursales</small></article>
+            <article class="metric-card"><span>En reparto</span><strong id="delivery-count">0</strong><small>Entregas en curso</small></article>
+            <article class="metric-card"><span>Entregados hoy</span><strong id="delivered-count">0</strong><small>Cierre confirmado</small></article>
+          </div>
+          <section class="panel" aria-labelledby="recent-title">
+            <div class="panel-heading"><div><h2 id="recent-title">Actividad reciente</h2><p>Últimos envíos cargados en el sistema.</p></div><button class="text-button" type="button" data-go-to="tracking">Buscar envío →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>Código</th><th>Destino</th><th>Estado</th><th>Actualización</th></tr></thead><tbody id="recent-shipments"></tbody></table></div>
+          </section>
+        </section>
+
+        <!-- VISTA 2: consulta pensada para operador o cliente. -->
+        <section class="view" id="tracking" aria-labelledby="tracking-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Consulta rápida</p><h1 id="tracking-title">Seguimiento de envío</h1></div></div>
+          <section class="panel tracking-panel">
+            <label for="tracking-code">Código de envío</label>
+            <div class="search-row"><input id="tracking-code" type="text" value="SJT-2026-0042" placeholder="Ej.: SJT-2026-0042" autocomplete="off" /><button class="primary-button" id="tracking-button" type="button">Consultar</button></div>
+            <p class="field-help">En producción, esta consulta se enviará de forma segura al backend.</p>
+            <div id="tracking-result" class="tracking-result" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <!-- VISTA 3: formulario. Actualmente guarda sólo en memoria para demostrar el flujo. -->
+        <section class="view" id="shipment" aria-labelledby="shipment-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Registro operativo</p><h1 id="shipment-title">Nuevo envío</h1></div></div>
+          <form class="panel shipment-form" id="shipment-form">
+            <div class="form-grid">
+              <label>Remitente<input name="sender" required placeholder="Nombre o empresa" /></label>
+              <label>Destinatario<input name="recipient" required placeholder="Nombre completo" /></label>
+              <label class="wide">Dirección de entrega<input name="address" required placeholder="Calle, número y localidad" /></label>
+              <label>Peso aproximado (kg)<input name="weight" type="number" min="0.1" step="0.1" required placeholder="0.0" /></label>
+              <label>Tipo de servicio<select name="service"><option>Express</option><option>Estándar</option></select></label>
+            </div>
+            <div class="form-actions"><p id="form-message" aria-live="polite"></p><button class="primary-button" type="submit">Crear envío</button></div>
+          </form>
+        </section>
+
+        <!-- VISTA 4: sólo información segura para una futura cuenta administradora. -->
+        <section class="view" id="infrastructure" aria-labelledby="infrastructure-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Administración</p><h1 id="infrastructure-title">Estado de infraestructura</h1></div></div>
+          <p class="security-note">Esta vista muestra disponibilidad general. No debe contener contraseñas, IPs internas ni controles de Proxmox.</p>
+          <div class="service-list">
+            <article><span class="service-status"></span><div><h2>Servicio web</h2><p>Interfaz de la intranet disponible mediante HTTPS.</p></div><b>Activo</b></article>
+            <article><span class="service-status"></span><div><h2>Base de datos</h2><p>Acceso permitido sólo desde el servidor web.</p></div><b>Activa</b></article>
+            <article><span class="service-status"></span><div><h2>Respaldo</h2><p>La fecha real llegará desde el backend de monitoreo.</p></div><b>Preparado</b></article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
